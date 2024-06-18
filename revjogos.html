@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameFinder</title>
+    <style>
+        /* Your existing CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .search-bar {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 50%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .panel {
+            width: 300px;
+            height: 400px;
+            margin: 15px;
+            padding: 15px;
+            border: 1px solid #007bff;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .panel img {
+            max-width: 100%;
+            height: auto;
+              
+        }
+        .panel .panel-title {
+            font-size: 20px;
+            margin-top: 10px;
+            text-align: left;
+        }
+        .panel .panel-description {
+            margin-top: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .panel .panel-footer {
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search for a game...">
+        <button type="button" onclick="searchGames()">Search</button>
+    </div>
+    <div class="container" id="game-container">
+        <!-- Game panels will be inserted here dynamically -->
+    </div>
+    <script>
+        function fetchGames() {
+            fetch('/api/games')
+                .then(response => response.json())
+                .then(data => displayGames(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayGames(games) {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = '';
+
+            games.forEach(game => {
+                const gamePanel = document.createElement('div');
+                gamePanel.className = 'panel';
+                gamePanel.innerHTML = `
+                    <img src="${game.thumbnail}" alt="${game.title}">
+                    <div class="panel-title">${game.title}</div>
+                    <div class="panel-description">${game.short_description}</div>
+                    <div class="panel-footer"><a href="${game.game_url}" target="_blank">Jogar agora</a></div>
+                `;
+                gameContainer.appendChild(gamePanel);
+            });
+        }
+
+        function searchGames() {
+            const query = document.getElementById('search-input').value;
+            if (query) {
+                // Add search functionality if needed
+                fetchGames(); // Example generic call
+            } else {
+                fetchGames(); // Load default games if search is empty
+            }
+        }
+
+        // Load games on page load
+        window.onload = fetchGames;
+    </script>
+</body>
+</html>
